@@ -1,8 +1,10 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .serializers import CommentSerializer, FollowSerializer
 from .serializers import GroupSerializer, PostSerializer
@@ -13,7 +15,8 @@ class PostViewSet(viewsets.ModelViewSet):
     """Набор правил для обработки текстовых постов авторов."""
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -32,7 +35,8 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """Набор правил для обработки комментариев к постам авторов."""
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         post = get_object_or_404(Post, pk=self.kwargs.get('post_id'))
@@ -56,10 +60,14 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """Набор правил для обработки групп постов авторов."""
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
-class FollowViewSet(viewsets.ReadOnlyModelViewSet):
+class FollowViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
     """Набор правил для обработки подписок на авторов."""
-    pass
-
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    permission_classes = (IsAuthenticated, )
+    pagination_class = LimitOffsetPagination
+    search_fields = ('user__following', )

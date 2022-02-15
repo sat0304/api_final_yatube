@@ -61,15 +61,6 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments')
-    post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name='comments')
-    text = models.TextField()
-    created = models.DateTimeField(
-        'Дата добавления', auto_now_add=True, db_index=True)
-
-class Comment(models.Model):
     """Таблица, содержащая комментарии пользователей."""
     post = models.ForeignKey(
         Post,
@@ -91,6 +82,7 @@ class Comment(models.Model):
         db_index=True,
     )
 
+
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
@@ -110,9 +102,10 @@ class Follow(models.Model):
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name='follow',
         verbose_name='Hа автора'
     )
+
 
     class Meta:
         verbose_name = 'Подписка'
