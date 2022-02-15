@@ -38,9 +38,9 @@ class GroupSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     """Компоновщик-анализатор подписок на авторов."""
     user = serializers.SlugRelatedField(
+        default=serializers.CurrentUserDefault(),
         read_only=True,
-        slug_field='username',
-        default=serializers.CurrentUserDefault()
+        slug_field='username'
     )
     following = serializers.SlugRelatedField(
         read_only=True,
@@ -58,5 +58,4 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('user', 'following')
-        read_only_feilds = ('following', )
         model = Follow
