@@ -63,9 +63,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
-class FollowViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
+class FollowViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
     viewsets.GenericViewSet):
     """Набор правил для обработки подписок на авторов."""
     queryset = Follow.objects.all()
