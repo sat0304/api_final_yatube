@@ -82,13 +82,13 @@ class Comment(models.Model):
         db_index=True,
     )
 
-
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
         return self.text
+
 
 class Follow(models.Model):
     """Таблица, содержащая подписки пользователей на
@@ -105,7 +105,6 @@ class Follow(models.Model):
         related_name='follow',
         verbose_name='Hа автора'
     )
-
 
     class Meta:
         verbose_name = 'Подписка'
