@@ -38,7 +38,25 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     """Компоновщик-анализатор подписок на авторов."""
+    user = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username'
+    )
+    following = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username'
+    )
+
+    def validate(self, data):
+        request = self.context.get('request')
+        following = data('following', )
+        if request.user == following:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя!'
+            )
+        return data
 
     class Meta:
         fields = ('user', 'following')
+        read_only_feilds = ('following', )
         model = Follow

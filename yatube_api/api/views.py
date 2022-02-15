@@ -70,4 +70,4 @@ class FollowViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated, )
     pagination_class = LimitOffsetPagination
-    search_fields = ('user__following', )
+    search_fields = ('user__username', 'following__username', )
