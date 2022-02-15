@@ -39,7 +39,8 @@ class FollowSerializer(serializers.ModelSerializer):
     """Компоновщик-анализатор подписок на авторов."""
     user = serializers.SlugRelatedField(
         read_only=True,
-        slug_field='username'
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
     )
     following = serializers.SlugRelatedField(
         read_only=True,
@@ -48,7 +49,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        following = data['following']
+        following = self.context['request'].user
         if request.user == following:
             raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя!'
