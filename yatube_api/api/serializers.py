@@ -57,7 +57,7 @@ class FollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя!'
             )
-        return data
+        return (data, Response(status=status.HTTP_201_CREATED))
 
     class Meta:
         fields = '__all__'

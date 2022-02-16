@@ -79,8 +79,7 @@ class FollowViewSet(
         following = serializer.validated_data['following']
         if Follow.objects.filter(
                 user=self.request.user,
-                following=following
-            ).exists():
+                following=following).exists():
             raise ValidationError('Подписка уже создана!')
         serializer.save(user=self.request.user)
 
