@@ -72,7 +72,7 @@ class FollowListOrCreate(
     pass
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(FollowListOrCreate):
     """Набор правил для обработки подписок на авторов."""
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
@@ -86,7 +86,7 @@ class FollowViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        following = serializer.validated_data['following']
+        following = serializer.validated_data('following',)
         if serializer.is_valid():
             serializer.save(user=self.request.user, following=following)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
