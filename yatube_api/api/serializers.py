@@ -47,6 +47,7 @@ class FollowSerializer(serializers.ModelSerializer):
     following = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username',
+        required=False
     )
 
     class Meta:
