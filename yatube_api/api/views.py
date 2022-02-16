@@ -1,4 +1,3 @@
-from typing_extensions import Self
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 
@@ -72,10 +71,11 @@ class FollowListOrCreate(
 ):
     pass
 
+
 class FollowViewSet(viewsets.ModelViewSet):
     """Набор правил для обработки подписок на авторов."""
     serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, IsAuthenticatedOrReadOnly )
     filter_backends = (filters.SearchFilter,)
     pagination_class = LimitOffsetPagination
     search_fields = ('following__username', 'user__username')
@@ -90,4 +90,4 @@ class FollowViewSet(viewsets.ModelViewSet):
             serializer.save(user=self.request.user, following=following)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
