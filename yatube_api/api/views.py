@@ -75,7 +75,7 @@ class FollowListOrCreate(
 class FollowViewSet(viewsets.ModelViewSet):
     """Набор правил для обработки подписок на авторов."""
     serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated, IsAuthenticatedOrReadOnly )
+    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     pagination_class = LimitOffsetPagination
     search_fields = ('following__username', 'user__username')
