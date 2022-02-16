@@ -49,16 +49,6 @@ class FollowSerializer(serializers.ModelSerializer):
         slug_field='username',
     )
 
-    def validate(self, data):
-        # request = self.context.get('request')
-        follower = self.context['request'].user
-        # if request.user == following:
-        if follower == data['following']:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя!'
-            )
-        return (data, Response(status=status.HTTP_201_CREATED))
-
     class Meta:
         fields = '__all__'
         model = Follow
@@ -68,3 +58,13 @@ class FollowSerializer(serializers.ModelSerializer):
                 fields=('user', 'following', )
             )
         ]
+        
+        # def validate(self, data):
+            # request = self.context.get('request')
+        #    follower = self.context['request'].user
+            # if request.user == following:
+         #   if follower == data['following']:
+        #        raise serializers.ValidationError(
+        #            'Нельзя подписаться на самого себя!'
+         #       )
+         #   return (data, Response(status=status.HTTP_201_CREATED)

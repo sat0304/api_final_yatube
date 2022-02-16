@@ -1,10 +1,12 @@
+from typing_extensions import Self
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.shortcuts import get_object_or_404
 
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
 from .serializers import CommentSerializer, FollowSerializer
 from .serializers import GroupSerializer, PostSerializer
@@ -63,26 +65,27 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
-class FollowViewSet(
+class FollowListOrCreate(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
+    pass
+
+class FollowViewSet(FollowListOrCreate):
     """Набор правил для обработки подписок на авторов."""
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated, )
     filter_backends = (filters.SearchFilter,)
-    pagination_class = None
+    pagination_class = LimitOffsetPagination
     search_fields = ('following__username', 'user__username')
 
-    def perform_create(self, serializer):
-        following = serializer.validated_data['following']
-        if Follow.objects.filter(
-                user=self.request.user,
-                following=following).exists():
-            raise ValidationError('Подписка уже создана!')
-        serializer.save(user=self.request.user)
-
     def get_queryset(self):
-        queryset_1 = Follow.objects.filter(user=self.request.user)
-        return queryset_1
+        queryset = Follow.objects.filter(user=self.request.user)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=self.request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
