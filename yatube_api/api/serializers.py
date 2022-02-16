@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.response import Response
 from rest_framework.validators import UniqueTogetherValidator
 
 from posts.models import Comment, Follow, Group, Post
@@ -55,7 +56,7 @@ class FollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя!'
             )
-        return data
+        return (data, Response(status=status.HTTP_201_CREATED))
 
     class Meta:
         fields = '__all__'
