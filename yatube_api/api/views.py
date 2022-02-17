@@ -72,9 +72,9 @@ class FollowListOrCreate(
     pass
 
 
-class FollowViewSet(FollowListOrCreate):
+class FollowViewSet(viewsets.ModelViewSet):
     """Набор правил для обработки подписок на авторов."""
-    queryset = Follow.objects.all()
+    # queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
@@ -86,9 +86,9 @@ class FollowViewSet(FollowListOrCreate):
         return queryset
 
     def perform_create(self, serializer):
-        following = serializer.validated_data('following',)
-        if serializer.is_valid():
-            serializer.save(user=self.request.user, following=following)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # following = self.validated_data['following']
+        # if serializer.is_valid():
+        serializer.save(user=self.request.user) #, following=following)
+        #    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # else:
+        #    return Response(status=status.HTTP_400_BAD_REQUEST)
