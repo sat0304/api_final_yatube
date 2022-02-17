@@ -87,7 +87,7 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # following = self.validated_data['following']
         # if serializer.is_valid():
-        serializer.save(user=self.request.user) 
+        serializer.save(user=self.request.user)
         # , following=following)
         # return Response(serializer.data, status=status.HTTP_201_CREATED)
         # else:
