@@ -71,7 +71,7 @@ class FollowListOrCreate(
     pass
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(FollowListOrCreate):
     """Набор правил для обработки подписок на авторов."""
     # queryset = Follow.objects.all()
     serializer_class = FollowSerializer
