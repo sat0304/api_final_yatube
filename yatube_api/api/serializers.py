@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers, status
+from rest_framework import serializers
 # from rest_framework.validators import UniqueTogetherValidator
-from rest_framework.response import Response
 
 from posts.models import Comment, Follow, Group, Post
 
@@ -53,10 +52,10 @@ class FollowSerializer(serializers.ModelSerializer):
         queryset=User.objects.all()
         # required=False
     )
-    
+
     def validate(self, data):
         user = self.context['request'].user
-        following = data['following'] # self.context['request'].user
+        following = data['following']
         if following == user:
             raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя!'

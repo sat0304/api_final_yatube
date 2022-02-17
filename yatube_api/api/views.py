@@ -1,11 +1,10 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
 
 from .serializers import CommentSerializer, FollowSerializer
 from .serializers import GroupSerializer, PostSerializer
@@ -88,7 +87,8 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # following = self.validated_data['following']
         # if serializer.is_valid():
-        serializer.save(user=self.request.user) #, following=following)
-        #    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.save(user=self.request.user) 
+        # , following=following)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
         # else:
         #    return Response(status=status.HTTP_400_BAD_REQUEST)
