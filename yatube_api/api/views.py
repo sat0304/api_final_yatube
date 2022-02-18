@@ -1,11 +1,12 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from .mixins import FollowListOrCreate
 from .serializers import CommentSerializer, FollowSerializer
 from .serializers import GroupSerializer, PostSerializer
 from posts.models import Comment, Follow, Group, Post
@@ -63,14 +64,6 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
-class FollowListOrCreate(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    pass
-
-
 class FollowViewSet(FollowListOrCreate):
     """Набор правил для обработки подписок на авторов."""
     # queryset = Follow.objects.all()
@@ -78,17 +71,11 @@ class FollowViewSet(FollowListOrCreate):
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     pagination_class = LimitOffsetPagination
-    search_fields = ('following__username', 'user__username')
+    search_fields = (r'following__username',)  # r'[\w]*')
 
     def get_queryset(self):
         queryset = Follow.objects.filter(user=self.request.user)
         return queryset
 
     def perform_create(self, serializer):
-        # following = self.validated_data['following']
-        # if serializer.is_valid():
         serializer.save(user=self.request.user)
-        # , following=following)
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # else:
-        #    return Response(status=status.HTTP_400_BAD_REQUEST)
